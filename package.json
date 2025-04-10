@@ -1,0 +1,23 @@
+{
+  "name": "e-oscar-automation",
+  "version": "1.0.0",
+  "description": "Web-based E-Oscar dispute review automation",
+  "scripts": {
+    "start": "firebase serve --only hosting,functions",
+    "deploy": "firebase deploy",
+    "emulate": "firebase emulators:start",
+    "functions": "cd functions && npm run serve",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker logs e-oscar-firebase-app -f",
+    "setup": "bash setup.sh",
+    "run": "bash run.sh"
+  },
+  "engines": {
+    "node": "18"
+  },
+  "private": true,
+  "dependencies": {
+    "firebase-tools": "^13.0.2"
+  }
+}

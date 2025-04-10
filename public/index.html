@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-Oscar Dispute Automation</title>
+  <!-- Firebase SDK -->
+  <script defer src="/__/firebase/9.23.0/firebase-app-compat.js"></script>
+  <script defer src="/__/firebase/9.23.0/firebase-auth-compat.js"></script>
+  <script defer src="/__/firebase/9.23.0/firebase-firestore-compat.js"></script>
+  <script defer src="/__/firebase/9.23.0/firebase-functions-compat.js"></script>
+  <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <div class="container mx-auto px-4 py-8">
+    <div id="login-container" class="max-w-md mx-auto bg-white rounded-lg shadow-md p-6 mb-8">
+      <h1 class="text-2xl font-bold text-center mb-6">E-Oscar Dispute Automation</h1>
+      <div id="login-form">
+        <button id="login-button" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+          Sign in with Google
+        </button>
+      </div>
+      <div id="user-profile" class="hidden mt-4">
+        <p>Welcome, <span id="user-name"></span>!</p>
+        <button id="logout-button" class="text-sm text-gray-500 hover:text-gray-700">Sign out</button>
+      </div>
+    </div>
+
+    <div id="app-container" class="hidden max-w-4xl mx-auto">
+      <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <h2 class="text-xl font-bold mb-4">Run Automation</h2>
+        <div class="mb-4">
+          <label class="block text-gray-700 mb-2">Select Operation</label>
+          <div class="flex space-x-4">
+            <button id="download-button" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
+              Download Reports
+            </button>
+            <button id="review-button" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+              Review Disputes
+            </button>
+          </div>
+        </div>
+        
+        <div id="client-selection" class="mb-4">
+          <label class="block text-gray-700 mb-2">Select Client</label>
+          <select id="client-dropdown" class="w-full border border-gray-300 rounded px-3 py-2">
+            <option value="all">All Clients</option>
+            <!-- Client options will be populated dynamically -->
+          </select>
+        </div>
+        
+        <div id="date-selection" class="mb-4">
+          <label class="block text-gray-700 mb-2">Select Date Range</label>
+          <div class="flex space-x-2">
+            <div>
+              <label class="block text-sm text-gray-600">Start Date</label>
+              <input type="date" id="start-date" class="border border-gray-300 rounded px-3 py-2">
+            </div>
+            <div>
+              <label class="block text-sm text-gray-600">End Date</label>
+              <input type="date" id="end-date" class="border border-gray-300 rounded px-3 py-2">
+            </div>
+          </div>
+          <div class="mt-2">
+            <button id="yesterday-button" class="text-sm bg-gray-200 hover:bg-gray-300 py-1 px-2 rounded">Yesterday</button>
+            <button id="weekend-button" class="text-sm bg-gray-200 hover:bg-gray-300 py-1 px-2 rounded">Weekend (Fri-Sun)</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="status-container" class="hidden bg-white rounded-lg shadow-md p-6 mb-8">
+        <h2 class="text-xl font-bold mb-4">Automation Status</h2>
+        <div class="mb-4">
+          <div class="relative pt-1">
+            <div class="flex mb-2 items-center justify-between">
+              <div>
+                <span id="status-message" class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-blue-600 bg-blue-200">
+                  Preparing...
+                </span>
+              </div>
+              <div class="text-right">
+                <span id="progress-percentage" class="text-xs font-semibold inline-block text-blue-600">
+                  0%
+                </span>
+              </div>
+            </div>
+            <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-blue-200">
+              <div id="progress-bar" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+        <div id="log-container" class="mt-4 bg-gray-100 p-3 rounded-md h-64 overflow-y-auto">
+          <pre id="execution-log" class="text-xs text-gray-700"></pre>
+        </div>
+      </div>
+
+      <div id="results-container" class="hidden bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-bold mb-4">Results</h2>
+        <div class="mb-4">
+          <h3 class="font-bold text-gray-700">Summary</h3>
+          <div class="flex space-x-4 mt-2">
+            <div class="bg-blue-100 p-3 rounded-lg text-center flex-1">
+              <span class="block text-2xl font-bold text-blue-700" id="total-disputes">0</span>
+              <span class="text-sm text-blue-600">Total Disputes</span>
+            </div>
+            <div class="bg-red-100 p-3 rounded-lg text-center flex-1">
+              <span class="block text-2xl font-bold text-red-700" id="frivolous-count">0</span>
+              <span class="text-sm text-red-600">Frivolous</span>
+            </div>
+            <div class="bg-green-100 p-3 rounded-lg text-center flex-1">
+              <span class="block text-2xl font-bold text-green-700" id="non-frivolous-count">0</span>
+              <span class="text-sm text-green-600">Non-Frivolous</span>
+            </div>
+          </div>
+        </div>
+        <div class="mb-4">
+          <h3 class="font-bold text-gray-700 mb-2">Disputes Processed</h3>
+          <div class="overflow-x-auto">
+            <table class="min-w-full bg-white border border-gray-200">
+              <thead>
+                <tr>
+                  <th class="py-2 px-4 border-b">Control Number</th>
+                  <th class="py-2 px-4 border-b">Name</th>
+                  <th class="py-2 px-4 border-b">Status</th>
+                  <th class="py-2 px-4 border-b">Action</th>
+                </tr>
+              </thead>
+              <tbody id="results-table-body">
+                <!-- Results will be populated dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

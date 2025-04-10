@@ -1,0 +1,37 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "disputes",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "client_name",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "dispute_status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "response_due_date",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "audit_logs",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "dispute_id",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "created_at",
+          "order": "DESCENDING"
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

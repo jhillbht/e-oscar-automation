@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: e-oscar-firebase-app
+    ports:
+      - "8080:8080"
+    environment:
+      - NODE_ENV=production
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/gcp-credentials/service-account.json
+      - SLACK_TOKEN=${SLACK_TOKEN}
+      - SLACK_OTP_CHANNEL=${SLACK_OTP_CHANNEL:-otp-test}
+      - CLICKUP_API_TOKEN=${CLICKUP_API_TOKEN}
+      - CLICKUP_LIST_ID=${CLICKUP_LIST_ID}
+      - GOOGLE_SHEETS_ID=${GOOGLE_SHEETS_ID:-1XrGspfqOI3mlkO-d_MIZYiEyyDHpZjaBqRWXlF6pIQU}
+      - GOOGLE_SHEETS_TAB_IMPORTS=${GOOGLE_SHEETS_TAB_IMPORTS:-ClickUp Imports}
+      - GOOGLE_SHEETS_TAB_CREDENTIALS=${GOOGLE_SHEETS_TAB_CREDENTIALS:-Login Credentials}
+      - EMAIL_USER=${EMAIL_USER}
+      - EMAIL_PASSWORD=${EMAIL_PASSWORD}
+      - ALERT_EMAIL=${ALERT_EMAIL}
+    volumes:
+      - ./logs:/app/logs
+      - ./gcp-credentials:/app/gcp-credentials
+    restart: unless-stopped
+    
+  emulators:
+    image: andreysenov/firebase-tools
+    container_name: e-oscar-firebase-emulators
+    ports:
+      - "4000:4000" # Emulator Suite UI
+      - "8085:8085" # Cloud Firestore
+      - "9099:9099" # Authentication
+      - "5001:5001" # Functions
+      - "9199:9199" # Storage
+    environment:
+      - FIREBASE_TOKEN=${FIREBASE_TOKEN}
+    volumes:
+      - .:/home/node/app
+    working_dir: /home/node/app
+    command: firebase emulators:start --project demo-e-oscar
+    depends_on:
+      - app

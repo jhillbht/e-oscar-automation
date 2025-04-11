@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  dispute-review:
+    build: .
+    container_name: e-oscar-test
+    volumes:
+      - ./logs:/app/logs
+    environment:
+      - NODE_ENV=development
+      - TEST_MODE=true
+    command: node src/index.js

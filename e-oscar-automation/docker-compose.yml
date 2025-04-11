@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  dispute-review:
+    build: .
+    container_name: e-oscar-dispute-review
+    restart: unless-stopped
+    volumes:
+      - ./logs:/app/logs
+      - ./.env:/app/.env:ro
+    environment:
+      - NODE_ENV=production
+      - TEST_MODE=${TEST_MODE:-false}
+    ports:
+      - "3000:3000" # For potential future web interface
+    cap_add:
+      - SYS_ADMIN
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 1G

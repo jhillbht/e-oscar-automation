@@ -1,0 +1,90 @@
+# Environment variables
+.env
+**/.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Node.js
+node_modules/
+**/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+**/package-lock.json
+
+# Logs
+logs/
+**/logs/
+*.log
+npm-debug.log*
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+
+# Supabase
+.supabase/
+
+# Build output
+dist/
+build/
+**/build/
+**/dist/
+out/
+**/out/
+
+# Firebase
+.firebase/
+firebase-debug.log
+firebase-debug.*.log
+
+# Testing
+coverage/
+**/coverage/
+
+# MacOS
+.DS_Store
+**/.DS_Store
+
+# IDEs and editors
+.idea/
+.vscode/
+*.swp
+*.swo
+*.sublime-workspace
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-project
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+tmp/
+**/tmp/
+
+# Backup files
+*.bak
+*~
+*.orig
+
+# Security
+**/credentials/
+**/secrets/
+*.pem
+*.crt
+*.key
+
+# Supabase service role key
+service-account-key.json
+**/service-account-key.json
+
+# Debug files
+*.debug.js
+*.debug.log

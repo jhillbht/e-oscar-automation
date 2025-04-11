@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  # Component 1: Report Download and Processing
+  report-processor:
+    build: ./report-processor
+    container_name: e-oscar-report-processor
+    restart: unless-stopped
+    volumes:
+      - ./report-processor/logs:/app/logs
+      - ./report-processor/.env:/app/.env:ro
+    environment:
+      - NODE_ENV=production
+    cap_add:
+      - SYS_ADMIN
+    deploy:
+      resources:
+        limits:
+          memory: 1.5G
+        reservations:
+          memory: 1G
+
+  # Component 2: Dispute Review Automation
+  dispute-review:
+    build: ./e-oscar-automation
+    container_name: e-oscar-dispute-review
+    restart: unless-stopped
+    volumes:
+      - ./e-oscar-automation/logs:/app/logs
+      - ./e-oscar-automation/.env:/app/.env:ro
+    environment:
+      - NODE_ENV=production
+    cap_add:
+      - SYS_ADMIN
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 1G
+
+  # Component 3: ClickUp Integration (future implementation)
+  # clickup-integration:
+  #   build: ./clickup-integration
+  #   container_name: e-oscar-clickup-integration
+  #   restart: unless-stopped
+  #   volumes:
+  #     - ./clickup-integration/logs:/app/logs
+  #     - ./clickup-integration/.env:/app/.env:ro
+  #   environment:
+  #     - NODE_ENV=production
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         memory: 1G
+  #       reservations:
+  #         memory: 512M
+
+networks:
+  default:
+    name: e-oscar-network

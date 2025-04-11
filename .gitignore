@@ -5,6 +5,7 @@
 .env.development
 .env.test
 .env.production
+.env.*.local
 
 # Node.js
 node_modules/
@@ -14,12 +15,16 @@ yarn-debug.log*
 yarn-error.log*
 package-lock.json
 **/package-lock.json
+npm-debug.log
+yarn-debug.log
+yarn-error.log
 
 # Logs
 logs/
 **/logs/
 *.log
 npm-debug.log*
+*.debug.log
 
 # Docker
 .dockerignore
@@ -35,11 +40,15 @@ build/
 **/dist/
 out/
 **/out/
+public/*.js
+public/*.map
 
 # Firebase
 .firebase/
 firebase-debug.log
 firebase-debug.*.log
+firestore-debug.log
+ui-debug.log
 
 # Testing
 coverage/
@@ -48,6 +57,7 @@ coverage/
 # MacOS
 .DS_Store
 **/.DS_Store
+Thumbs.db
 
 # IDEs and editors
 .idea/
@@ -87,4 +97,6 @@ service-account-key.json
 
 # Debug files
 *.debug.js
-*.debug.log
+
+# Google Cloud credentials
+gcp-credentials/
